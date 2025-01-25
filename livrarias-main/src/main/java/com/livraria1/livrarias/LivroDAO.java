@@ -28,7 +28,7 @@ public class LivroDAO {
                     autor TEXT NOT NULL,
                     dataPublicacao DATE NOT NULL,
                     editora TEXT NOT NULL,
-                    numeroPaginas INTEGER NOT NULL,
+                    numeroPaginas INTEGER ,
                     edicao INTEGER NOT NULL
                 );
                 """;
