@@ -43,7 +43,7 @@ Certifique-se de ter instalado:
    ```bash
    ./mvnw spring-boot:run
 6. Acesse a API:
-   URL base: http://localhost:8181
+   URL base: http://localhost:8191
 
 ### Com Docker:
 1. Clone o repositório:
@@ -62,7 +62,7 @@ Certifique-se de ter instalado:
    ./mvnw test
 2. Com Docker:
    ```bash
-   docker run nome-da-imagem mvn test
+   docker run dockerpinata/sqlite:latest mvn test
    
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
