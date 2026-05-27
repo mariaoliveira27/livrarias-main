@@ -21,7 +21,7 @@ public class LivroControllerTest {
     @BeforeEach
     public void setup() {
         // Criar um mock de LivroDAO
-        livroDAOMock = Mockito.mock(LivroDAO.class);
+        livroDAOMock = Mockito.mock(LivroDAO.class); //Sugestão 16: O mock livroDAOMock é criado, mas nunca é injetado no LivroController. Como o controller cria new LivroDAO(), os verify(...) não verificam a dependência realmente usada.
         livroController = new LivroController();
     }
 
@@ -43,7 +43,8 @@ public class LivroControllerTest {
         livroController.cadastrarLivro(id, titulo, autor, dataPublicacao, editora, numeroPaginas, edicao);
 
         // Verificar se o método do DAO foi chamado corretamente
-        verify(livroDAOMock, times(1)).cadastrarLivro(livro);
+        verify(livroDAOMock, times(1)).cadastrarLivro(livro); //Sugestão 17: A verificação compara objetos Livro, mas a classe não sobrescreve equals()/hashCode(). Mesmo com os mesmos dados, objetos diferentes podem não ser considerados iguais. Sugestão: usar ArgumentCaptor ou implementar igualdade baseada em campos.
+
     }
 
     @Test
@@ -79,7 +80,7 @@ public class LivroControllerTest {
         livrosMock.add(new Livro(2, "Harry Potter e a Pedra Filosofal", "J.K. Rowling", Date.valueOf("1997-06-26"), "Bloomsbury", 223, 1));
 
         // Simular o comportamento do DAO
-        when(livroDAOMock.listarLivros()).thenReturn(livrosMock);
+        when(livroDAOMock.listarLivros()).thenReturn(livrosMock);//Sugestão 18: O teste configura when(livroDAOMock.listarLivros()), mas o método real do controller não usa esse mock. Isso mostra como o acoplamento atual impede testes unitários confiáveis.
 
         // Chamar o método de listar
         livroController.listarLivros();
