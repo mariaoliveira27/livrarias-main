@@ -15,8 +15,8 @@ import java.sql.ResultSet;
 
 public class LivroDAO {
 
-    private String jdbcURL ="jdbc:sqlite:sqlite/livraria.db"; 
-    public LivroDAO() {
+    private String jdbcURL ="jdbc:sqlite:sqlite/livraria.db"; //Sugestão 5: A URL do banco está fixa dentro da classe. Isso dificulta trocar ambiente de teste, desenvolvimento e produção. Sugestão: mover para application.properties e injetar via configuração.
+    public LivroDAO() { //Sugestão 6: O construtor cria a tabela automaticamente. Embora funcione em projeto pequeno, essa responsabilidade poderia ir para migrations, como Flyway/Liquibase, ou para scripts de inicialização, evitando efeitos colaterais ao apenas instanciar o DAO.
         criarTabelaSeNaoExistir();
     }
 
@@ -36,7 +36,7 @@ public class LivroDAO {
         try (Connection conn = DriverManager.getConnection(jdbcURL);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-        } catch (SQLException e) {
+        } catch (SQLException e) { //Sugestão 7: O uso de e.printStackTrace() não é ideal para aplicação real. Sugestão: usar logging estruturado e lançar uma exceção de domínio/persistência para a camada superior decidir como tratar o erro.
             e.printStackTrace();
         }
     }
@@ -61,7 +61,7 @@ public class LivroDAO {
         }
     }
 
-    public void deletarLivro(String titulo) {
+    public void deletarLivro(String titulo) { //Sugestão 8: Excluir livro por titulo pode apagar múltiplos registros com o mesmo nome. Seria mais seguro deletar por id, que é a chave primária.
         String sql = "DELETE FROM livros WHERE titulo = ?;";
 
         try (Connection conn = DriverManager.getConnection(jdbcURL);
@@ -74,7 +74,7 @@ public class LivroDAO {
     }
 
     public void atualizarLivro(String editora, int edicao) {
-        String sql = "UPDATE livros SET editora = ?, edicao = ? WHERE edicao = ?;";
+        String sql = "UPDATE livros SET editora = ?, edicao = ? WHERE edicao = ?;"; //Sugestão 9: O UPDATE usa WHERE edicao = ?, mas também altera a própria edição para o mesmo valor. Isso torna a atualização ambígua e pode afetar vários livros. Sugestão: atualizar por id.
 
         try (Connection conn = DriverManager.getConnection(jdbcURL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -97,7 +97,7 @@ public class LivroDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
     
             while (rs.next()) {
-                Livro livro = new Livro(
+                Livro livro = new Livro( //Sugestão 10: Ao listar livros, o objeto é criado com id igual a 0, ignorando o id real do banco. Sugestão: usar rs.getInt("id") para preservar a identidade do registro.
                         0, rs.getString("titulo"),
                         rs.getString("autor"),
                         rs.getDate("dataPublicacao"),
